@@ -16,13 +16,11 @@ class Account():
         self.owner = owner    
 
     def withdraw(self,money_to_withdraw):
-        if self.balance == 0:
-            raise Exception ("Balance is 0")
         new_balance = self.balance - money_to_withdraw 
-        if new_balance > 0:
+        if new_balance < 0:
+            print("not enough balance to withdraw")
             return self.balance
-        else:
-            raise Exception ("Not enough balance")
+        self.balance -= money_to_withdraw
 
     def deposit(self, money_to_deposit):
         self.balance = self.balance + money_to_deposit 
@@ -32,7 +30,7 @@ class Account():
         print(f"{self.id} Your balance is {self.balance}")
 
     @classmethod
-    def all_accounts(self):
+    def all_accounts(cls):
         accounts = []
         my_path = os.path.abspath(os.path.dirname(__file__))
         path = os.path.join(my_path, "support/accounts.csv")
@@ -40,10 +38,7 @@ class Account():
             reader = csv.DictReader(csvfile)
             reader.fieldnames= "account_id", "balance", "date"
             for row in reader:
-                new_var = Account(**dict(row))
-                accounts.append(new_var)
-        # for account in accounts:
-        #     print(account.account_id, account.balance, account.date)
+                accounts.append(Account(**dict(row)))
         return accounts
     
     @classmethod
