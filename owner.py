@@ -10,7 +10,7 @@ class Owner:
         self.street_address = street_address
         self.city = city
         self.state = state
-        self.account_id = account_id
+        self.account_id = self._import_account()
 
 
     @classmethod
@@ -24,9 +24,16 @@ class Owner:
             for row in reader:
                 new_var = Owner(**dict(row))
                 owners.append(new_var)
-        # for account in accounts:
-        #     print(account.account_id, account.balance, account.date)
         return owners
+
+    def _import_account(self):
+        my_path = os.path.abspath(os.path.dirname(__file__))
+        path = os.path.join(my_path, "support/account_owners.csv")
+        with open(path) as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                if row[1] == self.owner_id:
+                    return row[0]
     
 
 

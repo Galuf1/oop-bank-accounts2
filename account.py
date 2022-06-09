@@ -1,8 +1,8 @@
 import csv
 import os.path
 
-class Account():
-    def __init__(self,account_id=None,balance=None,date=None,owner=None):
+class Account:
+    def __init__(self,account_id=int,balance=0,date=None,owner=None):
         
         self.account_id = account_id 
         if int(balance) >= 0:
@@ -10,7 +10,7 @@ class Account():
         else:
             raise Exception ("Negative balance")
         self.date = date
-        self.owner = owner
+        self.owner = self._import_owner()
 
     def owner_change(self,owner):
         self.owner = owner    
@@ -27,7 +27,7 @@ class Account():
         return self.balance
     
     def get_balance(self):
-        print(f"{self.id} Your balance is {self.balance}")
+        return f"{self.account_id} Your balance is {self.balance}"
 
     @classmethod
     def all_accounts(cls):
@@ -41,8 +41,18 @@ class Account():
                 accounts.append(Account(**dict(row)))
         return accounts
     
+    def _import_owner(self):
+        my_path = os.path.abspath(os.path.dirname(__file__))
+        path = os.path.join(my_path, "support/account_owners.csv")
+        with open(path) as csvfile:
+            reader = csv.reader(csvfile)
+            for row in reader:
+                if row[0] == self.account_id:
+                    return row[1]
     @classmethod
     def find(self,id):
         for account in self.all_accounts():
             if account.account_id == id:
                 return account
+    
+    
